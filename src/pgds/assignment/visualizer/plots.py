@@ -1,4 +1,4 @@
-
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -222,4 +222,356 @@ def plot_emi_analysis(df):
         df.groupby('LOAN_TYPE')['EMI_AMOUNT'].mean().plot(kind='bar')
         plt.title("EMI by Loan Type")
         plt.savefig("reports/figures/emi_loan_type.png")
+        plt.clf()
+
+# Task 9
+
+def plot_application_insights(applications):
+
+    # -----------------------------
+    # APPROVAL RATE
+    # -----------------------------
+    if 'APPROVAL_STATUS' in applications.columns:
+        applications['APPROVAL_STATUS'].value_counts().plot(kind='bar')
+        plt.title("Approval vs Rejection")
+        plt.savefig("reports/figures/application_status.png")
+        plt.clf()
+
+    # -----------------------------
+    # REJECTION REASONS
+    # -----------------------------
+    if 'REJECTION_REASON' in applications.columns:
+        applications['REJECTION_REASON'].value_counts().head(5).plot(kind='bar')
+        plt.title("Top Rejection Reasons")
+        plt.savefig("reports/figures/rejection_reasons.png")
+        plt.clf()
+
+
+# Task 10
+
+def plot_recovery_analysis(defaults, df, branches):
+
+    # -----------------------------
+    # RECOVERY RATE DISTRIBUTION
+    # -----------------------------
+    defaults['RECOVERY_RATE'] = defaults['RECOVERY_AMOUNT'] / defaults['DEFAULT_AMOUNT']
+
+    defaults['RECOVERY_RATE'].hist()
+    plt.title("Recovery Rate Distribution")
+    plt.savefig("reports/figures/recovery_distribution.png")
+    plt.clf()
+
+    # -----------------------------
+    # LEGAL ACTION COMPARISON
+    # -----------------------------
+    if 'LEGAL_ACTION' in defaults.columns:
+        defaults.groupby('LEGAL_ACTION')['RECOVERY_RATE'].mean().plot(kind='bar')
+        plt.title("Recovery Rate by Legal Action")
+        plt.savefig("reports/figures/recovery_legal.png")
+        plt.clf()
+
+# Task 11
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def plot_disbursement_efficiency(applications, loans, branches):
+
+    # Convert to datetime safely
+    applications['APPLICATION_DATE'] = pd.to_datetime(
+        applications['APPLICATION_DATE'], errors='coerce'
+    )
+    loans['DISBURSEMENT_DATE'] = pd.to_datetime(
+        loans['DISBURSEMENT_DATE'], errors='coerce'
+    )
+
+    # Merge safely
+    if 'APPLICATION_ID' in applications.columns and 'APPLICATION_ID' in loans.columns:
+        merged = applications.merge(loans, on='APPLICATION_ID', how='left')
+    else:
+        print("⚠️ APPLICATION_ID missing → cannot merge")
+        return
+
+    # Processing time
+    merged['PROCESSING_DAYS'] = (
+        merged['DISBURSEMENT_DATE'] - merged['APPLICATION_DATE']
+    ).dt.days
+
+    # -----------------------------
+    # PLOT 1: DISTRIBUTION
+    # -----------------------------
+    merged['PROCESSING_DAYS'].dropna().hist()
+    plt.title("Processing Time Distribution")
+    plt.savefig("reports/figures/processing_time.png")
+    plt.clf()
+
+    # -----------------------------
+    # PLOT 2: BRANCH COMPARISON
+    # -----------------------------
+    if 'BRANCH_ID' in merged.columns:
+        merged.groupby('BRANCH_ID')['PROCESSING_DAYS'].mean().plot(kind='bar')
+        plt.title("Processing Time by Branch")
+        plt.savefig("reports/figures/processing_branch.png")
+        plt.clf()
+
+# Task 12
+
+def plot_profitability(df, branches):
+
+    # -----------------------------
+    # PROFIT BY LOAN PURPOSE
+    # -----------------------------
+    if 'LOAN_PURPOSE' in df.columns:
+        df.groupby('LOAN_PURPOSE')['INTEREST_INCOME'].sum().plot(kind='bar')
+        plt.title("Profit by Loan Purpose")
+        plt.savefig("reports/figures/profit_purpose.png")
+        plt.clf()
+
+    # -----------------------------
+    # REGION PROFITABILITY
+    # -----------------------------
+    merged = df.merge(branches, on='BRANCH_ID', how='left')
+
+    if 'REGION' in merged.columns:
+        merged.groupby('REGION')['INTEREST_INCOME'].sum().plot(kind='bar')
+        plt.title("Profit by Region")
+        plt.savefig("reports/figures/profit_region.png")
+        plt.clf()
+
+# Task 13
+import matplotlib.pyplot as plt
+
+def plot_geospatial(df, branches):
+
+    merged = df.merge(branches, on='BRANCH_ID', how='left')
+
+    # -----------------------------
+    # REGION DISTRIBUTION
+    # -----------------------------
+    if 'REGION' in merged.columns:
+        merged['REGION'].value_counts().plot(kind='bar')
+        plt.title("Loan Distribution by Region")
+        plt.savefig("reports/figures/geo_distribution.png")
+        plt.clf()
+
+    # -----------------------------
+    # DEFAULT RATE BY REGION
+    # -----------------------------
+    if 'REGION' in merged.columns:
+        merged.groupby('REGION')['DEFAULT_FLAG'].mean().plot(kind='bar')
+        plt.title("Default Rate by Region")
+        plt.savefig("reports/figures/geo_default.png")
+        plt.clf()
+
+    # -----------------------------
+    # RURAL vs URBAN
+    # -----------------------------
+    if 'AREA_TYPE' in merged.columns:
+        merged.groupby('AREA_TYPE')['LOAN_AMOUNT'].sum().plot(kind='bar')
+        plt.title("Loan Disbursement: Rural vs Urban")
+        plt.savefig("reports/figures/geo_rural_urban.png")
+        plt.clf()
+
+# Task 14
+
+def plot_default_trends(df, defaults):
+
+    # -----------------------------------
+    # DEFAULT TREND OVER TIME
+    # -----------------------------------
+    if 'DEFAULT_DATE' in defaults.columns:
+        defaults['DEFAULT_DATE'] = pd.to_datetime(defaults['DEFAULT_DATE'])
+
+        defaults.groupby(
+            defaults['DEFAULT_DATE'].dt.to_period('M')
+        ).size().plot()
+
+        plt.title("Default Trends Over Time")
+        plt.savefig("reports/figures/default_trend.png")
+        plt.clf()
+
+    # -----------------------------------
+    # DEFAULT BY INCOME GROUP
+    # -----------------------------------
+    if 'ANNUAL_INCOME' in df.columns:
+        df['INCOME_GROUP'] = pd.qcut(df['ANNUAL_INCOME'], q=3, labels=['Low','Medium','High'])
+
+        df.groupby('INCOME_GROUP')['DEFAULT_FLAG'].mean().plot(kind='bar')
+        plt.title("Default Rate by Income Group")
+        plt.savefig("reports/figures/default_income.png")
+        plt.clf()
+
+#Task 15
+def plot_branch_efficiency(applications, loans):
+
+    applications['APPLICATION_DATE'] = pd.to_datetime(applications['APPLICATION_DATE'])
+    loans['DISBURSEMENT_DATE'] = pd.to_datetime(loans['DISBURSEMENT_DATE'])
+
+    merged = applications.merge(loans, on='APPLICATION_ID', how='left')
+
+    merged['PROCESSING_DAYS'] = (
+        merged['DISBURSEMENT_DATE'] - merged['APPLICATION_DATE']
+    ).dt.days
+
+    # -----------------------------
+    # PROCESSING TIME
+    # -----------------------------
+    if 'BRANCH_ID' in merged.columns:
+        merged.groupby('BRANCH_ID')['PROCESSING_DAYS'].mean().plot(kind='bar')
+        plt.title("Branch Processing Time")
+        plt.savefig("reports/figures/branch_efficiency_time.png")
+        plt.clf()
+
+    # -----------------------------
+    # REJECTED APPLICATIONS
+    # -----------------------------
+    if 'APPROVAL_STATUS' in applications.columns:
+        applications[applications['APPROVAL_STATUS'] == 'REJECTED'] \
+            .groupby('BRANCH_ID').size().plot(kind='bar')
+
+        plt.title("Rejected Applications by Branch")
+        plt.savefig("reports/figures/branch_rejections.png")
+        plt.clf()
+
+# Task 16
+
+def plot_time_series(loans, applications, defaults, df, branches):
+
+    # -----------------------------
+    # DISBURSEMENT TREND
+    # -----------------------------
+    loans['DISBURSEMENT_DATE'] = pd.to_datetime(loans['DISBURSEMENT_DATE'])
+
+    loans.groupby(
+        loans['DISBURSEMENT_DATE'].dt.to_period('M')
+    ).size().plot()
+
+    plt.title("Monthly Loan Disbursement")
+    plt.savefig("reports/figures/time_disbursement.png")
+    plt.clf()
+
+    # -----------------------------
+    # SEASONAL PATTERN
+    # -----------------------------
+    applications['APPLICATION_DATE'] = pd.to_datetime(applications['APPLICATION_DATE'])
+
+    applications.groupby(
+        applications['APPLICATION_DATE'].dt.month
+    ).size().plot(kind='bar')
+
+    plt.title("Seasonal Loan Applications")
+    plt.savefig("reports/figures/time_seasonal.png")
+    plt.clf()
+
+    # -----------------------------
+    # DEFAULT RATE BY REGION
+    # -----------------------------
+    defaults['DEFAULT_DATE'] = pd.to_datetime(defaults['DEFAULT_DATE'])
+
+    merged = df.merge(branches, on='BRANCH_ID', how='left') \
+               .merge(defaults, on='LOAN_ID', how='left')
+
+    merged['MONTH'] = merged['DEFAULT_DATE'].dt.to_period('M')
+
+    merged.groupby('MONTH')['DEFAULT_FLAG'].mean().plot()
+
+    plt.title("Monthly Default Rate")
+    plt.savefig("reports/figures/time_default.png")
+    plt.clf()
+
+# Task 17
+
+def plot_customer_behavior(df):
+
+    # -----------------------------
+    # DEFAULT RATE BY INCOME
+    # -----------------------------
+    if 'ANNUAL_INCOME' in df.columns:
+        df['INCOME_GROUP'] = pd.qcut(df['ANNUAL_INCOME'], q=3, labels=['Low','Medium','High'])
+
+        df.groupby('INCOME_GROUP')['DEFAULT_FLAG'].mean().plot(kind='bar')
+        plt.title("Default Rate by Income Group")
+        plt.savefig("reports/figures/behavior_income.png")
+        plt.clf()
+
+    # -----------------------------
+    # DEFAULT RATE BY REGION
+    # -----------------------------
+    if 'REGION' in df.columns:
+        df.groupby('REGION')['DEFAULT_FLAG'].mean().plot(kind='bar')
+        plt.title("Default Rate by Region")
+        plt.savefig("reports/figures/behavior_region.png")
+        plt.clf()
+
+# Task 18
+
+def plot_risk_analysis(df, defaults):
+
+    merged = df.merge(defaults, on='LOAN_ID', how='left')
+
+    # -----------------------------
+    # RISK MATRIX HEATMAP
+    # -----------------------------
+    cols = ['DEFAULT_AMOUNT', 'LOAN_TERM', 'INTEREST_RATE']
+    cols = [c for c in cols if c in merged.columns]
+
+    if len(cols) >= 2:
+        sns.heatmap(merged[cols].corr(), annot=True)
+        plt.title("Risk Matrix Heatmap")
+        plt.savefig("reports/figures/risk_matrix.png")
+        plt.clf()
+
+    # -----------------------------
+    # LOAN TYPE RISK
+    # -----------------------------
+    if 'LOAN_TYPE' in merged.columns:
+        merged.groupby('LOAN_TYPE')['DEFAULT_AMOUNT'].mean().plot(kind='bar')
+        plt.title("Loan Type Risk Ranking")
+        plt.savefig("reports/figures/risk_loan_type.png")
+        plt.clf()
+
+# Task 19
+
+def plot_time_to_default(loans, defaults):
+
+    loans['DISBURSEMENT_DATE'] = pd.to_datetime(loans['DISBURSEMENT_DATE'])
+    defaults['DEFAULT_DATE'] = pd.to_datetime(defaults['DEFAULT_DATE'])
+
+    merged = loans.merge(defaults, on='LOAN_ID', how='inner')
+
+    merged['TIME_TO_DEFAULT'] = (
+        merged['DEFAULT_DATE'] - merged['DISBURSEMENT_DATE']
+    ).dt.days
+
+    # -----------------------------
+    # DISTRIBUTION
+    # -----------------------------
+    merged['TIME_TO_DEFAULT'].dropna().hist()
+    plt.title("Time to Default Distribution")
+    plt.savefig("reports/figures/time_to_default_dist.png")
+    plt.clf()
+
+# Task 20
+
+def plot_transaction_patterns(transactions, df):
+
+    # -----------------------------
+    # TRANSACTION TYPE DISTRIBUTION
+    # -----------------------------
+    if 'TRANSACTION_TYPE' in transactions.columns:
+        transactions['TRANSACTION_TYPE'].value_counts().plot(kind='bar')
+        plt.title("Transaction Types")
+        plt.savefig("reports/figures/txn_types.png")
+        plt.clf()
+
+    # -----------------------------
+    # OVERDUE VS NON-OVERDUE
+    # -----------------------------
+    if 'OVERDUE_AMOUNT' in df.columns:
+        overdue = df[df['OVERDUE_AMOUNT'] > 0]['LOAN_AMOUNT']
+        non_overdue = df[df['OVERDUE_AMOUNT'] == 0]['LOAN_AMOUNT']
+
+        plt.hist([overdue, non_overdue], label=['Overdue', 'Non-Overdue'])
+        plt.legend()
+        plt.title("Overdue vs Non-Overdue Loan Amount")
+        plt.savefig("reports/figures/overdue_vs_non.png")
         plt.clf()

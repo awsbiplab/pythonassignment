@@ -11,7 +11,9 @@ def clean_data(data):
         # -----------------------------
         # 1. STANDARDIZE COLUMN NAMES
         # -----------------------------
-        df.columns = df.columns.str.strip().str.upper()
+        # df.columns = df.columns.str.strip().str.upper()
+        df.columns = df.columns.str.strip()  # remove spaces
+        df.columns = df.columns.str.upper()  # 🔥 REQUIRED FIX
 
         # -----------------------------
         # 2. REMOVE DUPLICATES

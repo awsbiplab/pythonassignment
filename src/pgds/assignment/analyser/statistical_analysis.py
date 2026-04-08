@@ -50,23 +50,27 @@ def advanced_statistical_analysis(df, branches=None, defaults=None):
     # 3. BRANCH-LEVEL CORRELATION
     # -----------------------------------
     if branches is not None:
-        branch_cols = [
+        if 'BRANCH_ID' not in df.columns:
+            print("⚠️ ********** BRANCH_ID not available in dataset → skipping branch-level correlation")
+        else:
+             print("######################")
+             branch_cols = [
             'DELINQUENT_LOANS',
             'LOAN_DISBURSEMENT_AMOUNT'
-        ]
+            ]
 
-        merged = df.merge(branches, on='BRANCH_ID', how='left')
+             merged = df.merge(branches, on='BRANCH_ID', how='left')
 
-        merged['RECOVERY_RATE'] = merged.get('RECOVERY_AMOUNT', 0) / merged.get('DEFAULT_AMOUNT', 1)
+             merged['RECOVERY_RATE'] = merged.get('RECOVERY_AMOUNT', 0) / merged.get('DEFAULT_AMOUNT', 1)
 
-        branch_cols = [c for c in branch_cols if c in merged.columns]
+             branch_cols = [c for c in branch_cols if c in merged.columns]
 
-        branch_cols.append('RECOVERY_RATE')
+             branch_cols.append('RECOVERY_RATE')
 
-        if len(branch_cols) >= 2:
-            branch_corr = merged[branch_cols].corr()
-            results['branch_corr'] = branch_corr
+             if len(branch_cols) >= 2:
+                 branch_corr = merged[branch_cols].corr()
+                 results['branch_corr'] = branch_corr
 
-            print("\nBranch-Level Correlation:\n", branch_corr)
+                 print("\nBranch-Level Correlation:\n", branch_corr)
 
     return results

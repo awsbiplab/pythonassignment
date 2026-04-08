@@ -24,8 +24,11 @@ def mergeAll(data):
 
     df = loans.merge(customers, on='CUSTOMER_ID', how='left')
 
+    # if 'Branch_ID' in loans.columns and 'Branch_ID' in data['branches'].columns:
+    #     df = df.merge(data['branches'], on='Branch_ID', how='left')
+
     if 'BRANCH_ID' in loans.columns and 'BRANCH_ID' in data['branches'].columns:
-        df = df.merge(data['branches'], on='BRANCH_ID', how='left')
+         df = df.merge(data['branches'], on='BRANCH_ID', how='left')
 
     return df
 # def mergeAll(data):

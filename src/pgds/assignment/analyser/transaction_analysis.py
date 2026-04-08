@@ -60,8 +60,9 @@ def transaction_and_recovery_analysis(df, transactions, defaults, branches):
     # -----------------------------------
     # 6. REGION COMPARISON
     # -----------------------------------
-    merged = df.merge(branches, on='BRANCH_ID', how='left') \
-               .merge(defaults, on='LOAN_ID', how='left')
+    # merged = df.merge(branches, on='BRANCH_ID', how='left') \
+    #            .merge(defaults, on='LOAN_ID', how='left')
+    merged = df.merge(defaults, on='LOAN_ID', how='left')
 
     if 'REGION' in merged.columns:
         region_recovery = merged.groupby('REGION')['RECOVERY_RATE'].mean()
@@ -72,9 +73,14 @@ def transaction_and_recovery_analysis(df, transactions, defaults, branches):
     # -----------------------------------
     # 7. BRANCH COMPARISON
     # -----------------------------------
-    branch_recovery = merged.groupby('BRANCH_ID')['RECOVERY_RATE'].mean()
-    results['branch_recovery'] = branch_recovery
+    if 'REGION' in merged.columns:
+        region_recovery = merged.groupby('REGION')['RECOVERY_RATE'].mean()
+        results['region_recovery'] = region_recovery
 
-    print("\nRecovery by Branch:\n", branch_recovery.head())
+        print("\nRecovery by Region:\n", region_recovery)
+    # branch_recovery = merged.groupby('BRANCH_ID')['RECOVERY_RATE'].mean()
+    # results['branch_recovery'] = branch_recovery
+    #
+    # print("\nRecovery by Branch:\n", branch_recovery.head())
 
     return results
