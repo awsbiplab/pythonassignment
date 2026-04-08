@@ -1,0 +1,1 @@
+def application_analysis(df): return df['APPROVAL_STATUS'].value_counts(normalize=True)

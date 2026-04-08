@@ -1,0 +1,1 @@
+def customer_behavior(df): return df.groupby('CUSTOMER_ID')['DEFAULT_FLAG'].sum()

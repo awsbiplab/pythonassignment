@@ -1,0 +1,1 @@
+def profitability(df): df['INTEREST_INCOME']=df['LOAN_AMOUNT']*df['INTEREST_RATE']; return df['INTEREST_INCOME'].sum()

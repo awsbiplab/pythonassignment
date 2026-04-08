@@ -1,0 +1,1 @@
+def risk_matrix(df): return df.groupby('LOAN_TERM')['DEFAULT_FLAG'].mean()

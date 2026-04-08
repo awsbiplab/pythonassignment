@@ -1,0 +1,1 @@
+def transaction_pattern(df): return df.groupby('TRANSACTION_TYPE')['TRANSACTION_AMOUNT'].sum()

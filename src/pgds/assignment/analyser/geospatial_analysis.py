@@ -1,0 +1,1 @@
+def geo_analysis(df): return df['REGION'].value_counts()

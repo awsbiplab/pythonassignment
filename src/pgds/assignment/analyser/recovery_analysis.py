@@ -1,0 +1,1 @@
+def recovery_effectiveness(df): df['RECOVERY_RATE']=df['RECOVERY_AMOUNT']/df['DEFAULT_AMOUNT']; return df['RECOVERY_RATE'].mean()

@@ -1,0 +1,1 @@
+def default_trends(df): return df.groupby('LOAN_AMOUNT')['DEFAULT_FLAG'].mean()
