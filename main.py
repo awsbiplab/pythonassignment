@@ -11,6 +11,7 @@ from src.pgds.assignment.dataprocessor.merge_data import merge_all
 # ANALYSIS MODULES
 # -----------------------------------
 from src.pgds.assignment.analyser.descriptive_analysis import descriptive_analysis
+from src.pgds.assignment.analyser.default_risk_analysis import default_risk_analysis
 from src.pgds.assignment.analyser.branch_analysis import branch_performance_analysis
 from src.pgds.assignment.analyser.customer_analysis import customer_segmentation
 from src.pgds.assignment.analyser.statistical_analysis import advanced_statistical_analysis
@@ -73,9 +74,7 @@ def main():
 
     df = merge_all(data)
 
-    # # -----------------------------------
-    # # ANALYSIS
-    # # -----------------------------------
+
     # # -----------------------------------
     # # Task 2 :  Descriptive Analysis
     # # -----------------------------------
@@ -84,9 +83,10 @@ def main():
     plot_descriptive(df, data['applications'])
 
     # # -----------------------------------
-    # # Task 3 :  Default Risk Analysis Need check
+    # # Task 3 :  Default Risk Analysis
     # # -----------------------------------
-
+    default_risk_analysis(df, data['branches'])
+    plot_default_risk(df, data['branches'])
     # # -----------------------------------
     # # Task 4 :  Branch and Regional Performance
     # # -----------------------------------
@@ -139,7 +139,8 @@ def main():
     # # -----------------------------------
     # # Task 11 :     Loan Disbursement Efficiency
     # # -----------------------------------
-    print("Asked to Skipped but try to do some part ")
+    print("Task 11 : Loan Disbursement Efficiency ")
+
     disbursement_efficiency(df)
     plot_disbursement_efficiency(df)
 
@@ -170,7 +171,17 @@ def main():
     # # -----------------------------------
     # # Task 15 :      Default Trends
     # # -----------------------------------
-    print("Task 15 :      TODO  ")
+    print("""Task 15 is NOT DOABLE due to missing linkage between branch and loan/application data
+    loans.csv :  no BRANCH_ID
+    applications.csv :  no BRANCH_ID
+     TASK FEASIBILITY
+     1. Avg Disbursement Time per Branch Required: BRANCH_ID APPLICATION_DATE + DISBURSAL_DATE : NOT DOABLE
+
+     2. Rejected Applications per Branch Required:BRANCH_ID ,APPROVAL_STATUS :NOT DOABLE
+
+     3. Customer Satisfaction per Branch Required:BRANCH_ID ,Satisfaction column :NOT DOABLE
+    """)
+
 
     # # -----------------------------------
     # # Task 16 :       Time-Series Analysis
@@ -228,7 +239,8 @@ def main():
     print("\n ALL TASKS COMPLETED SUCCESSFULLY\n")
     print(" Check reports/figures/ for charts")
     print(" Check reports/hero_fincorp_analysis.docx for report")
-
+    print("\n All merge column names shown below")
+    print(df.columns)
 
 if __name__ == "__main__":
     main()

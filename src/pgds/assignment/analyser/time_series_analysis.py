@@ -52,10 +52,29 @@ def time_series_analysis(df):
 
         results['seasonal_disb'] = seasonal_disb
 
-    # -----------------------------------
-    # 3. DEFAULT RATE BY REGION (NOT DOABLE)
-    # -----------------------------------
-    print("\n Monthly default rate by region NOT possible")
-    print("Reason: DEFAULT_DATE column not available in dataset")
+        # -----------------------------------
+        # 3. MONTHLY DEFAULT RATE BY REGION
+        # -----------------------------------
+        if 'DISBURSAL_DATE' in df.columns and 'REGION' in df.columns and 'DEFAULT_FLAG' in df.columns:
+
+            df['DISBURSAL_DATE'] = pd.to_datetime(df['DISBURSAL_DATE'], errors='coerce')
+
+            df_valid = df[df['DISBURSAL_DATE'].notna()].copy()
+
+            if df_valid.empty:
+                print(" No valid DISBURSAL_DATE data")
+            else:
+                df_valid['MONTH'] = df_valid['DISBURSAL_DATE'].dt.to_period('M')
+
+                region_default = df_valid.groupby(
+                    ['REGION', 'MONTH']
+                )['DEFAULT_FLAG'].mean()
+
+                print("\nMonthly Default Rate by Region:\n", region_default.head())
+
+                results['region_default'] = region_default
+
+        else:
+            print("Required columns missing for default rate")
 
     return results

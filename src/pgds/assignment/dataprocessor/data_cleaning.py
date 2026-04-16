@@ -30,7 +30,7 @@ def clean_data(data):
     # -----------------------------------
     for name, df in data.items():
 
-        print(f"\n🔍 Cleaning {name} dataset...")
+        print(f"\nCleaning {name} dataset...")
 
         ds_summary = {
             'dataset': name,
@@ -65,7 +65,7 @@ def clean_data(data):
         if 'CUSTOMER_ID' in df.columns:
             df = df[df['CUSTOMER_ID'].notna()]
 
-        # 🔥 IMPORTANT FIX: DO NOT DROP LOAN_ID FOR APPLICATIONS
+        # IMPORTANT FIX: DO NOT DROP LOAN_ID FOR APPLICATIONS
         if name != 'applications':
             if 'LOAN_ID' in df.columns:
                 df = df[df['LOAN_ID'].notna()]
@@ -178,7 +178,7 @@ def clean_data(data):
         cleaned[name] = df
         dataset_summary.append(ds_summary)
 
-        print(f"✅ {name} cleaned. Shape: {df.shape}")
+        print(f"{name} cleaned. Shape: {df.shape}")
 
     # -----------------------------------
     # GLOBAL FEATURE ENGINEERING
@@ -206,7 +206,7 @@ def clean_data(data):
     for name, df in cleaned.items():
         df.to_csv(f"data/cleaned/{name}.csv", index=False)
 
-    print("\n✅ Cleaned datasets saved")
+    print("\nCleaned datasets saved")
 
     # -----------------------------------
     # SAVE SUMMARY
@@ -220,6 +220,6 @@ def clean_data(data):
 
     dataset_df.to_csv("reports/data_cleaning_dataset_breakdown.csv", index=False)
 
-    print("\n📊 Summary saved")
+    print("\nSummary saved")
 
     return cleaned

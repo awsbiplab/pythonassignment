@@ -17,11 +17,11 @@ def geospatial_analysis(df):
 
         # fallback if empty
         if active_loans.empty:
-            print("⚠️ No ACTIVE loans → using non-default loans")
+            print("No ACTIVE loans → using non-default loans")
             active_loans = df[df['DEFAULT_FLAG'] == 0]
 
     else:
-        print("⚠️ LOAN_STATUS missing → using DEFAULT_FLAG")
+        print("LOAN_STATUS missing → using DEFAULT_FLAG")
         active_loans = df[df['DEFAULT_FLAG'] == 0]
 
     # REGION DISTRIBUTION
@@ -29,12 +29,12 @@ def geospatial_analysis(df):
 
         region_dist = active_loans['REGION'].value_counts()
 
-        print("\n📊 Active Loans by Region:\n", region_dist)
+        print("\n Active Loans by Region:\n", region_dist)
 
         results['region_distribution'] = region_dist
 
     else:
-        print("⚠️ REGION missing")
+        print("REGION missing")
 
     # -----------------------------------
     # 2. DEFAULT RATE BY REGION
@@ -43,14 +43,14 @@ def geospatial_analysis(df):
 
         default_rate = df.groupby('REGION')['DEFAULT_FLAG'].mean()
 
-        print("\n📊 Default Rate by Region:\n", default_rate)
+        print("\n Default Rate by Region:\n", default_rate)
 
         results['default_rate'] = default_rate
 
     # -----------------------------------
     # 3. RURAL vs URBAN (NOT AVAILABLE)
     # -----------------------------------
-    print("\n⚠️ Rural vs Urban analysis NOT possible")
+    print("\n Rural vs Urban analysis NOT possible")
     print("Reason: AREA_TYPE column not available in dataset")
 
     return results

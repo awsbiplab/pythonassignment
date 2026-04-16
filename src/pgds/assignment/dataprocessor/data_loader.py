@@ -22,5 +22,5 @@ def load_cleaned_data():
             name = file.replace(".csv", "")
             cleaned_data[name] = pd.read_csv(os.path.join(path, file))
 
-    print("✅ Loaded cleaned datasets")
+    print("Loaded cleaned datasets")
     return cleaned_data

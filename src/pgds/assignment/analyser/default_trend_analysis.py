@@ -47,9 +47,16 @@ def default_trend_analysis(df):
         print(" LOAN_PURPOSE missing")
 
     # -----------------------------------
-    # 3. DEFAULT RATE BY INCOME SEGMENT
+    # 3. DEFAULT RATE BY INCOME SEGMENT 
     # -----------------------------------
-    if 'INCOME_SEGMENT' in df.columns:
+
+    if 'ANNUAL_INCOME' in df.columns:
+
+        df['INCOME_SEGMENT'] = pd.qcut(
+            df['ANNUAL_INCOME'],
+            3,
+            labels=['Low', 'Medium', 'High']
+        )
 
         income_default = df.groupby('INCOME_SEGMENT')['DEFAULT_FLAG'].mean()
 
@@ -58,6 +65,6 @@ def default_trend_analysis(df):
         results['income_default'] = income_default
 
     else:
-        print(" INCOME_SEGMENT missing")
+        print(" ANNUAL_INCOME missing")
 
     return results

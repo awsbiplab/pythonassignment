@@ -2,7 +2,7 @@ import pandas as pd
 
 def descriptive_analysis(df, applications):
 
-    print("\n📊 DESCRIPTIVE ANALYSIS")
+    print("\ DESCRIPTIVE ANALYSIS")
 
     results = {}
 

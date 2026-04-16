@@ -4,7 +4,7 @@ import seaborn as sns
 
 def plot_descriptive(df, applications):
 
-    print("\n📈 GENERATING DESCRIPTIVE PLOTS")
+    print("\n GENERATING DESCRIPTIVE PLOTS")
 
     # -----------------------------------
     # 1. LOAN DISTRIBUTION
@@ -12,7 +12,7 @@ def plot_descriptive(df, applications):
     if 'LOAN_AMOUNT' in df.columns:
         df['LOAN_AMOUNT'].dropna().hist(bins=30)
         plt.title("Loan Amount Distribution")
-        plt.savefig("reports/figures/loan_distribution.png")
+        plt.savefig("reports/figures/task_2_loan_distribution.png")
         plt.clf()
 
     # -----------------------------------
@@ -21,7 +21,7 @@ def plot_descriptive(df, applications):
     if 'EMI_AMOUNT' in df.columns:
         df['EMI_AMOUNT'].dropna().hist(bins=30)
         plt.title("EMI Distribution")
-        plt.savefig("reports/figures/emi_distribution.png")
+        plt.savefig("reports/figures/task_2_emi_distribution.png")
         plt.clf()
 
     # -----------------------------------
@@ -30,7 +30,7 @@ def plot_descriptive(df, applications):
     if 'CREDIT_SCORE' in df.columns:
         df['CREDIT_SCORE'].dropna().hist(bins=30)
         plt.title("Credit Score Distribution")
-        plt.savefig("reports/figures/credit_score.png")
+        plt.savefig("reports/figures/task_2_credit_score.png")
         plt.clf()
 
     # -----------------------------------
@@ -39,7 +39,7 @@ def plot_descriptive(df, applications):
     if 'REGION' in df.columns:
         df.groupby('REGION')['LOAN_AMOUNT'].sum().plot(kind='bar')
         plt.title("Loan Distribution by Region")
-        plt.savefig("reports/figures/region_loan.png")
+        plt.savefig("reports/figures/task_2_region_loan.png")
         plt.clf()
 
     # -----------------------------------
@@ -48,7 +48,7 @@ def plot_descriptive(df, applications):
     if 'REGION' in df.columns:
         df.groupby('REGION')['DEFAULT_FLAG'].mean().plot(kind='bar')
         plt.title("Default Rate by Region")
-        plt.savefig("reports/figures/region_default.png")
+        plt.savefig("reports/figures/task_2_region_default.png")
         plt.clf()
 
     # -----------------------------------
@@ -69,7 +69,7 @@ def plot_descriptive(df, applications):
 
     monthly.plot()
     plt.title("Monthly Applications")
-    plt.savefig("reports/figures/monthly_applications.png")
+    plt.savefig("reports/figures/task_2_monthly_applications.png")
     plt.clf()
 
     # -----------------------------------
@@ -88,20 +88,14 @@ def plot_descriptive(df, applications):
 
     monthly_approved.plot()
     plt.title("Monthly Approved Loans")
-    plt.savefig("reports/figures/monthly_approved.png")
+    plt.savefig("reports/figures/task_2_monthly_approved.png")
     plt.clf()
 
 
 ## Task 3
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 def plot_default_risk(df, branches):
 
-    print("\n📊 PLOTTING DEFAULT RISK (CLEAR SIMPLE HEATMAP)")
+    print("\nPLOTTING DEFAULT RISK (CLEAR SIMPLE HEATMAP)")
 
     # -----------------------------------
     # 1. LOAN ATTRIBUTE CORRELATION
@@ -116,15 +110,15 @@ def plot_default_risk(df, branches):
         sns.heatmap(
             corr,
             annot=True,
-            cmap="YlGnBu",     # 👈 LIGHT COLOR (IMPORTANT)
-            annot_kws={"size": 10}  # 👈 Bigger text
+            cmap="YlGnBu",
+            annot_kws={"size": 10}
         )
 
         plt.title("Loan Attribute Correlation")
         plt.xticks(rotation=30)
         plt.yticks(rotation=0)
 
-        plt.savefig("reports/figures/correlation_main.png")
+        plt.savefig("reports/figures/task_3_correlation_main.png")
         plt.clf()
 
     # -----------------------------------
@@ -142,7 +136,7 @@ def plot_default_risk(df, branches):
         sns.heatmap(
             corr_pair,
             annot=True,
-            cmap="YlGnBu",      # 👈 SAME LIGHT COLOR
+            cmap="YlGnBu",
             annot_kws={"size": 10}
         )
 
@@ -150,7 +144,7 @@ def plot_default_risk(df, branches):
         plt.xticks(rotation=30)
         plt.yticks(rotation=0)
 
-        plt.savefig("reports/figures/correlation_pairwise.png")
+        plt.savefig("reports/figures/task_3_correlation_pairwise.png")
         plt.clf()
 
     # -----------------------------------
@@ -177,11 +171,10 @@ def plot_default_risk(df, branches):
         plt.bar(branch_corr.keys(), branch_corr.values())
         plt.title("Branch Metrics vs Default")
 
-        plt.savefig("reports/figures/correlation_branch.png")
+        plt.savefig("reports/figures/task_3_correlation_branch.png")
         plt.clf()
 
 # Task 4
-import matplotlib.pyplot as plt
 
 def plot_branch_performance(branches):
 
@@ -200,7 +193,7 @@ def plot_branch_performance(branches):
     )
 
     plt.title("Top Regions by Loan Disbursement")
-    plt.savefig("reports/figures/branch_loan.png")
+    plt.savefig("reports/figures/task_4_branch_loan.png")
     plt.clf()
 
     # -----------------------------------
@@ -216,7 +209,7 @@ def plot_branch_performance(branches):
     )
 
     plt.title("High Delinquency Regions")
-    plt.savefig("reports/figures/branch_delinquency.png")
+    plt.savefig("reports/figures/task_4_branch_delinquency.png")
     plt.clf()
 
     # -----------------------------------
@@ -226,12 +219,12 @@ def plot_branch_performance(branches):
 
     region_perf['LOAN_DISBURSEMENT_AMOUNT'].plot(kind='bar')
     plt.title("Loan Disbursement by Region")
-    plt.savefig("reports/figures/region_loan.png")
+    plt.savefig("reports/figures/task_4_region_loan.png")
     plt.clf()
 
     region_perf['DELINQUENT_LOANS'].plot(kind='bar')
     plt.title("Delinquent Loans by Region")
-    plt.savefig("reports/figures/region_delinquency.png")
+    plt.savefig("reports/figures/task_4_region_delinquency.png")
     plt.clf()
 
     # -----------------------------------
@@ -253,7 +246,7 @@ def plot_customer_segmentation(df):
     if 'INCOME_SEGMENT' in df.columns:
         df['INCOME_SEGMENT'].value_counts().plot(kind='bar')
         plt.title("Customer Distribution by Income")
-        plt.savefig("reports/figures/income_segment.png")
+        plt.savefig("reports/figures/task_5_income_segment.png")
         plt.clf()
 
     # -----------------------------------
@@ -262,7 +255,7 @@ def plot_customer_segmentation(df):
     if 'CREDIT_SEGMENT' in df.columns:
         df['CREDIT_SEGMENT'].value_counts().plot(kind='bar')
         plt.title("Customer Distribution by Credit Score")
-        plt.savefig("reports/figures/credit_segment.png")
+        plt.savefig("reports/figures/task_5_credit_segment.png")
         plt.clf()
 
     # -----------------------------------
@@ -271,7 +264,7 @@ def plot_customer_segmentation(df):
     if 'LOAN_STATUS' in df.columns:
         df['LOAN_STATUS'].value_counts().plot(kind='bar')
         plt.title("Loan Status Distribution")
-        plt.savefig("reports/figures/loan_status.png")
+        plt.savefig("reports/figures/task_5_loan_status.png")
         plt.clf()
 
 #         Task 6
@@ -300,7 +293,7 @@ def plot_advanced_analysis(df, branches):
         sns.heatmap(corr, annot=True, cmap="YlGnBu")
 
         plt.title("Default Risk Correlation")
-        plt.savefig("reports/figures/adv_default_corr.png")
+        plt.savefig("reports/figures/task_6_adv_default_corr.png")
         plt.clf()
 
     # -----------------------------------
@@ -318,7 +311,7 @@ def plot_advanced_analysis(df, branches):
         sns.heatmap(corr_pair, annot=True, cmap="YlGnBu")
 
         plt.title("Pairwise Correlation")
-        plt.savefig("reports/figures/adv_pairwise_corr.png")
+        plt.savefig("reports/figures/task_6_adv_pairwise_corr.png")
         plt.clf()
 
     # -----------------------------------
@@ -332,12 +325,10 @@ def plot_advanced_analysis(df, branches):
     sns.heatmap(corr_branch, annot=True, cmap="YlGnBu")
 
     plt.title("Branch Internal Correlation")
-    plt.savefig("reports/figures/adv_branch_corr.png")
+    plt.savefig("reports/figures/task_6_adv_branch_corr.png")
     plt.clf()
 
 #  Task 7
-import matplotlib.pyplot as plt
-
 def plot_transaction_recovery(df, transactions):
 
     print("\n PLOTTING TRANSACTION & RECOVERY")
@@ -349,7 +340,7 @@ def plot_transaction_recovery(df, transactions):
 
         transactions['PAYMENT_TYPE'].value_counts().plot(kind='bar')
         plt.title("Transaction Type Distribution")
-        plt.savefig("reports/figures/txn_type.png")
+        plt.savefig("reports/figures/task_7_txn_type.png")
         plt.clf()
 
     # -----------------------------------
@@ -359,7 +350,7 @@ def plot_transaction_recovery(df, transactions):
 
         df.groupby('DEFAULT_REASON')['RECOVERY_RATE'].mean().plot(kind='bar')
         plt.title("Recovery by Default Reason")
-        plt.savefig("reports/figures/recovery_reason.png")
+        plt.savefig("reports/figures/task_7_recovery_reason.png")
         plt.clf()
 
     # -----------------------------------
@@ -369,7 +360,7 @@ def plot_transaction_recovery(df, transactions):
 
         df.groupby('REGION')['RECOVERY_RATE'].mean().plot(kind='bar')
         plt.title("Recovery by Region")
-        plt.savefig("reports/figures/recovery_region.png")
+        plt.savefig("reports/figures/task_7_recovery_region.png")
         plt.clf()
 
     # -----------------------------------
@@ -391,7 +382,7 @@ def plot_emi_analysis(df):
         emi_default.plot(kind='bar')
         plt.title("Default Probability by EMI Segment")
 
-        plt.savefig("reports/figures/emi_default.png")
+        plt.savefig("reports/figures/task_8_emi_default.png")
         plt.clf()
 
     # -----------------------------------
@@ -403,7 +394,7 @@ def plot_emi_analysis(df):
         threshold.plot(kind='bar')
         plt.title("EMI Threshold Analysis")
 
-        plt.savefig("reports/figures/emi_threshold.png")
+        plt.savefig("reports/figures/task_8_emi_threshold.png")
         plt.clf()
 
     # -----------------------------------
@@ -427,7 +418,7 @@ def plot_application_analysis(applications):
         applications['APPROVAL_STATUS'].value_counts().plot(kind='bar')
         plt.title("Approval vs Rejection")
 
-        plt.savefig("reports/figures/application_status.png")
+        plt.savefig("reports/figures/task_9_application_status.png")
         plt.clf()
 
     # -----------------------------------
@@ -449,7 +440,7 @@ def plot_application_analysis(applications):
         rejected[reason_col].value_counts().plot(kind='bar')
         plt.title("Rejection Reasons")
 
-        plt.savefig("reports/figures/rejection_reason.png")
+        plt.savefig("reports/figures/task_9_rejection_reason.png")
         plt.clf()
 
     # -----------------------------------
@@ -467,7 +458,7 @@ def plot_application_analysis(applications):
         applications.groupby('APPROVAL_STATUS')[fee_col].mean().plot(kind='bar')
         plt.title("Processing Fee Comparison")
 
-        plt.savefig("reports/figures/processing_fee.png")
+        plt.savefig("reports/figures/task_9_processing_fee.png")
         plt.clf()
 
     print("\n Some plots may be skipped if columns not present")
@@ -485,7 +476,7 @@ def plot_disbursement_efficiency(df):
         df.groupby('REGION')['PROCESSING_DAYS'].mean().plot(kind='bar')
         plt.title("Processing Time by Region")
 
-        plt.savefig("reports/figures/disbursement_region.png")
+        plt.savefig("reports/figures/task_11_disbursement_region.png")
         plt.clf()
 
     # -----------------------------------
@@ -500,7 +491,7 @@ def plot_disbursement_efficiency(df):
             purpose_data.plot(kind='bar')
             plt.title("Processing Time by Loan Purpose")
 
-            plt.savefig("reports/figures/disbursement_purpose.png")
+            plt.savefig("reports/figures/task_11_disbursement_purpose.png")
             plt.clf()
 
         else:
@@ -523,7 +514,7 @@ def plot_profitability(df):
         df.groupby('LOAN_PURPOSE')['INTEREST_INCOME'].sum().plot(kind='bar')
         plt.title("Profit by Loan Purpose")
 
-        plt.savefig("reports/figures/profit_purpose.png")
+        plt.savefig("reports/figures/task_12_profit_purpose.png")
         plt.clf()
 
     # -----------------------------------
@@ -534,14 +525,12 @@ def plot_profitability(df):
         df.groupby('REGION')['INTEREST_INCOME'].sum().plot(kind='bar')
         plt.title("Profit by Region")
 
-        plt.savefig("reports/figures/profit_region.png")
+        plt.savefig("reports/figures/task_12_profit_region.png")
         plt.clf()
 
     print("\n Branch plot not generated (no linkage)")
 
 # Task 13
-
-import matplotlib.pyplot as plt
 
 def plot_geospatial(df):
 
@@ -578,7 +567,7 @@ def plot_geospatial(df):
             region_counts.plot(kind='bar')
             plt.title("Active Loans by Region")
 
-            plt.savefig("reports/figures/geo_distribution.png")
+            plt.savefig("reports/figures/task_13_geo_distribution.png")
             plt.clf()
 
         else:
@@ -599,7 +588,7 @@ def plot_geospatial(df):
             default_rate.plot(kind='bar')
             plt.title("Default Rate by Region")
 
-            plt.savefig("reports/figures/geo_default.png")
+            plt.savefig("reports/figures/task_13_geo_default.png")
             plt.clf()
 
         else:
@@ -644,7 +633,7 @@ def plot_default_trends(df):
             trend.plot(kind='line')
             plt.title("Default Trend Over Time")
 
-            plt.savefig("reports/figures/default_trend.png")
+            plt.savefig("reports/figures/task_14_default_trend.png")
             plt.clf()
 
         else:
@@ -661,13 +650,20 @@ def plot_default_trends(df):
             purpose.plot(kind='bar')
             plt.title("Default Amount by Loan Purpose")
 
-            plt.savefig("reports/figures/default_purpose.png")
+            plt.savefig("reports/figures/task_14_default_purpose.png")
             plt.clf()
 
     # -----------------------------------
     # 3. INCOME SEGMENT
     # -----------------------------------
-    if 'INCOME_SEGMENT' in df.columns:
+
+    if 'ANNUAL_INCOME' in df.columns:
+
+        df['INCOME_SEGMENT'] = pd.qcut(
+            df['ANNUAL_INCOME'],
+            3,
+            labels=['Low', 'Medium', 'High']
+        )
 
         income = df.groupby('INCOME_SEGMENT')['DEFAULT_FLAG'].mean()
 
@@ -675,8 +671,16 @@ def plot_default_trends(df):
             income.plot(kind='bar')
             plt.title("Default Rate by Income Segment")
 
-            plt.savefig("reports/figures/default_income.png")
+            plt.savefig("reports/figures/task_14_default_income.png")
             plt.clf()
+
+            print(" default_income.png saved")
+
+        else:
+            print(" Income segment data empty")
+
+    else:
+        print(" ANNUAL_INCOME missing")
 
 # Task 16
 def plot_time_series(df):
@@ -699,7 +703,7 @@ def plot_time_series(df):
             trend.plot(kind='line')
             plt.title("Monthly Loan Disbursement")
 
-            plt.savefig("reports/figures/time_disbursement.png")
+            plt.savefig("reports/figures/task_16_time_disbursement.png")
             plt.clf()
 
     # -----------------------------------
@@ -718,7 +722,7 @@ def plot_time_series(df):
             seasonal.plot(kind='bar')
             plt.title("Seasonal Applications")
 
-            plt.savefig("reports/figures/time_seasonal_app.png")
+            plt.savefig("reports/figures/task_16_time_seasonal_app.png")
             plt.clf()
 
     # -----------------------------------
@@ -735,14 +739,42 @@ def plot_time_series(df):
             seasonal.plot(kind='bar')
             plt.title("Seasonal Disbursement")
 
-            plt.savefig("reports/figures/time_seasonal_disb.png")
+            plt.savefig("reports/figures/task_16_time_seasonal_disb.png")
             plt.clf()
 
-    # -----------------------------------
-    # LIMITATION
-    # -----------------------------------
-    print("\n Default trend plot not generated")
-    print("Reason: DEFAULT_DATE not available")
+        # -----------------------------------
+        # 3. DEFAULT RATE BY REGION (FIXED)
+        # -----------------------------------
+    if 'DISBURSAL_DATE' in df.columns and 'REGION' in df.columns:
+
+        df['DISBURSAL_DATE'] = pd.to_datetime(df['DISBURSAL_DATE'], errors='coerce')
+
+        df_valid = df[df['DISBURSAL_DATE'].notna()].copy()
+
+        if not df_valid.empty:
+
+            df_valid['MONTH'] = df_valid['DISBURSAL_DATE'].dt.to_period('M')
+
+            region_default = df_valid.groupby(
+                ['MONTH', 'REGION']
+            )['DEFAULT_FLAG'].mean().unstack()
+
+            if not region_default.empty:
+                region_default.plot()
+                plt.title("Monthly Default Rate by Region")
+
+                plt.savefig("reports/figures/task_16_time_default_region.png")
+                plt.clf()
+
+                print(" time_default_region.png saved")
+
+            else:
+                print(" No data for region default plot")
+        else:
+            print(" DISBURSAL_DATE invalid")
+
+    else:
+        print(" Required columns missing")
 
 # Task 17
 
@@ -771,7 +803,7 @@ def plot_customer_behavior(df, applications, customers):
         if not segments.empty:
             segments.plot(kind='bar')
             plt.title("Customer Repayment Behavior")
-            plt.savefig("reports/figures/customer_behavior.png")
+            plt.savefig("reports/figures/task_17_customer_behavior.png")
             plt.clf()
 
     # -----------------------------------
@@ -797,7 +829,7 @@ def plot_customer_behavior(df, applications, customers):
         if not age_plot.empty:
             age_plot.plot(kind='bar')
             plt.title("Approval by Age Group")
-            plt.savefig("reports/figures/customer_age.png")
+            plt.savefig("reports/figures/task_17_customer_age.png")
             plt.clf()
 
     # -----------------------------------
@@ -812,7 +844,7 @@ def plot_customer_behavior(df, applications, customers):
         if not gender_plot.empty:
             gender_plot.plot(kind='bar')
             plt.title("Approval by Gender")
-            plt.savefig("reports/figures/customer_gender.png")
+            plt.savefig("reports/figures/task_17_customer_gender.png")
             plt.clf()
 
 # Task 18
@@ -832,7 +864,7 @@ def plot_risk(df):
             purpose_risk.plot(kind='bar')
             plt.title("Risk by Loan Purpose")
 
-            plt.savefig("reports/figures/risk_purpose.png")
+            plt.savefig("reports/figures/task_18_risk_purpose.png")
             plt.clf()
 
     # -----------------------------------
@@ -847,7 +879,7 @@ def plot_risk(df):
             credit_risk.plot(kind='bar')
             plt.title("Risk by Credit Segment")
 
-            plt.savefig("reports/figures/risk_credit.png")
+            plt.savefig("reports/figures/task_18_risk_credit.png")
             plt.clf()
 
 # Task 19
@@ -871,7 +903,7 @@ def plot_time_to_default(df):
             purpose.plot(kind='bar')
             plt.title("Time to Default by Loan Purpose")
 
-            plt.savefig("reports/figures/time_to_default_purpose.png")
+            plt.savefig("reports/figures/task_19_time_to_default_purpose.png")
             plt.clf()
 
     # -----------------------------------
@@ -886,13 +918,11 @@ def plot_time_to_default(df):
             credit.plot(kind='bar')
             plt.title("Time to Default by Credit Segment")
 
-            plt.savefig("reports/figures/time_to_default_credit.png")
+            plt.savefig("reports/figures/task_19_time_to_default_credit.png")
             plt.clf()
 
 # Task 20
 
-import matplotlib.pyplot as plt
-import os
 
 def plot_transaction_pattern(transactions, df):
 
@@ -901,7 +931,7 @@ def plot_transaction_pattern(transactions, df):
     transactions.columns = [col.upper() for col in transactions.columns]
 
     # Ensure folder exists
-    os.makedirs("reports/figures", exist_ok=True)
+    # os.makedirs("reports/figures", exist_ok=True)
 
     # -----------------------------------
     # PAYMENT TYPE DISTRIBUTION
@@ -914,7 +944,7 @@ def plot_transaction_pattern(transactions, df):
             counts.plot(kind='bar')
             plt.title("Payment Type Distribution")
 
-            plt.savefig("reports/figures/txn_type_dist.png")
+            plt.savefig("reports/figures/task_20_txn_type_dist.png")
             plt.clf()
 
             print(" txn_type.png saved")
