@@ -11,7 +11,6 @@ from src.pgds.assignment.dataprocessor.merge_data import merge_all
 # ANALYSIS MODULES
 # -----------------------------------
 from src.pgds.assignment.analyser.descriptive_analysis import descriptive_analysis
-from src.pgds.assignment.analyser.default_analysis import default_risk_analysis
 from src.pgds.assignment.analyser.branch_analysis import branch_performance_analysis
 from src.pgds.assignment.analyser.customer_analysis import customer_segmentation
 from src.pgds.assignment.analyser.statistical_analysis import advanced_statistical_analysis
@@ -19,8 +18,6 @@ from src.pgds.assignment.analyser.transaction_analysis import transaction_recove
 from src.pgds.assignment.analyser.loan_application_analysis import loan_application_analysis
 
 from src.pgds.assignment.analyser.emi_analysis import emi_analysis
-from src.pgds.assignment.analyser.application_analysis import application_insights
-from src.pgds.assignment.analyser.recovery_analysis import recovery_effectiveness
 from src.pgds.assignment.analyser.disbursement_analysis import disbursement_efficiency
 from src.pgds.assignment.analyser.profitability_analysis import profitability_analysis
 from src.pgds.assignment.analyser.geospatial_analysis import geospatial_analysis
@@ -30,7 +27,6 @@ from src.pgds.assignment.analyser.customer_behavior import customer_behavior_ana
 from src.pgds.assignment.analyser.risk_analysis import risk_analysis
 from src.pgds.assignment.analyser.time_to_default_analysis import time_to_default_analysis
 from src.pgds.assignment.analyser.transaction_pattern_analysis import transaction_pattern_analysis
-from src.pgds.assignment.analyser.branch_efficiency import branch_efficiency_analysis
 
 # -----------------------------------
 # VISUALIZATION MODULES
@@ -53,23 +49,7 @@ from src.pgds.assignment.visualizer.plots import (
     plot_time_to_default,
     plot_transaction_pattern,
      plot_default_risk
-     # plot_branch_performance,
-    # plot_customer_segments,
-    # plot_statistical_analysis,
-    # plot_transaction_recovery,
-    # plot_emi_analysis,
-    # plot_application_insights,
-    # plot_recovery_analysis,
-    # plot_disbursement_efficiency,
-    # plot_profitability,
-    # plot_geospatial,
-    # plot_default_trends,
-    # plot_time_series,
-    # plot_customer_behavior,
-    # plot_risk_analysis,
-    # plot_time_to_default,
-    # plot_transaction_patterns,
-    # plot_branch_efficiency
+
 )
 
 # -----------------------------------
