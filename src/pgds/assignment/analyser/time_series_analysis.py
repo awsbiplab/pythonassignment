@@ -1,97 +1,61 @@
 import pandas as pd
 
+def time_series_analysis(df):
 
-def time_series_analysis(df, loans, applications, defaults, branches):
-
-    print("TIME SERIES ANALYSIS")
+    print("\n TIME SERIES ANALYSIS")
 
     results = {}
 
     # -----------------------------------
-    # STANDARDIZE COLUMN NAMES (IMPORTANT)
+    # 1. MONTHLY DISBURSEMENT TREND
     # -----------------------------------
-    df.columns = [col.upper() for col in df.columns]
-    loans.columns = [col.upper() for col in loans.columns]
-    applications.columns = [col.upper() for col in applications.columns]
-    defaults.columns = [col.upper() for col in defaults.columns]
+    if 'DISBURSAL_DATE' in df.columns:
 
-    # -----------------------------------
-    # 1. LOAN DISBURSEMENT TREND
-    # -----------------------------------
-    if 'DISBURSAL_DATE' in loans.columns:
-        loans['DISBURSAL_DATE'] = pd.to_datetime(
-            loans['DISBURSAL_DATE'], errors='coerce'
-        )
+        df['DISBURSAL_DATE'] = pd.to_datetime(df['DISBURSAL_DATE'], errors='coerce')
 
-        disbursement_trend = loans.groupby(
-            loans['DISBURSAL_DATE'].dt.to_period('M')
+        disb_trend = df.groupby(
+            df['DISBURSAL_DATE'].dt.to_period('M')
         ).size()
 
-        results['disbursement_trend'] = disbursement_trend
+        print("\n Monthly Disbursement Trend:\n", disb_trend.head())
 
-        print("\nMonthly Disbursement Trend:\n", disbursement_trend.head())
+        results['disbursement'] = disb_trend
+
+    else:
+        print(" DISBURSAL_DATE missing")
 
     # -----------------------------------
     # 2. SEASONAL PATTERN (APPLICATIONS)
     # -----------------------------------
-    if 'APPLICATION_DATE' in applications.columns:
-        applications['APPLICATION_DATE'] = pd.to_datetime(
-            applications['APPLICATION_DATE'], errors='coerce'
-        )
+    if 'APPLICATION_DATE' in df.columns:
 
-        seasonal = applications.groupby(
-            applications['APPLICATION_DATE'].dt.month
+        df['APPLICATION_DATE'] = pd.to_datetime(df['APPLICATION_DATE'], errors='coerce')
+
+        seasonal_app = df.groupby(
+            df['APPLICATION_DATE'].dt.month
         ).size()
 
-        results['seasonal_pattern'] = seasonal
+        print("\n Seasonal Pattern (Applications):\n", seasonal_app)
 
-        print("\nSeasonal Pattern (Month-wise):\n", seasonal)
+        results['seasonal_app'] = seasonal_app
 
     # -----------------------------------
-    # 3. MONTHLY DEFAULT RATE (REGION)
+    # SEASONAL PATTERN (DISBURSEMENT)
     # -----------------------------------
-    if 'DEFAULT_DATE' in defaults.columns:
+    if 'DISBURSAL_DATE' in df.columns:
 
-        defaults['DEFAULT_DATE'] = pd.to_datetime(
-            defaults['DEFAULT_DATE'], errors='coerce'
-        )
+        seasonal_disb = df.groupby(
+            df['DISBURSAL_DATE'].dt.month
+        ).size()
 
-        # ✅ Merge ONLY with defaults (NOT branches)
-        merged = df.merge(defaults, on='LOAN_ID', how='left')
+        print("\n Seasonal Pattern (Disbursement):\n", seasonal_disb)
 
-        # Ensure REGION exists (from customers)
-        if 'REGION' not in merged.columns:
-            if 'Region' in merged.columns:
-                merged['REGION'] = merged['Region']
-            else:
-                print("⚠️ REGION missing → skipping regional default analysis")
-                return results
+        results['seasonal_disb'] = seasonal_disb
 
-        # Create DEFAULT_FLAG if missing
-        if 'DEFAULT_FLAG' not in merged.columns:
-            merged['DEFAULT_FLAG'] = merged['DEFAULT_AMOUNT'].notnull().astype(int)
-
-        # Create MONTH
-        # Ensure DEFAULT_DATE exists after merge
-        if 'DEFAULT_DATE' not in merged.columns:
-            print("DEFAULT_DATE missing after merge → skipping")
-            return results
-
-        # Ensure datetime
-        merged['DEFAULT_DATE'] = pd.to_datetime(merged['DEFAULT_DATE'], errors='coerce')
-
-        # Remove invalid dates
-        merged = merged[merged['DEFAULT_DATE'].notna()]
-
-        # Create MONTH
-        merged['MONTH'] = merged['DEFAULT_DATE'].dt.to_period('M')
-
-        region_default = merged.groupby(
-            ['REGION', 'MONTH']
-        )['DEFAULT_FLAG'].mean()
-
-        results['region_default'] = region_default
-
-        print("\nMonthly Default Rate by Region:\n", region_default.head())
+    # -----------------------------------
+    # 3. DEFAULT RATE BY REGION (NOT DOABLE)
+    # -----------------------------------
+    print("\n Monthly default rate by region NOT possible")
+    print("Reason: DEFAULT_DATE column not available in dataset")
 
     return results

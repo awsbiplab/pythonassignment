@@ -2,7 +2,7 @@ import pandas as pd
 
 def disbursement_efficiency(df):
 
-    print("\n LOAN DISBURSEMENT EFFICIENCY")
+    print("\n⏱️ LOAN DISBURSEMENT EFFICIENCY")
 
     results = {}
 
@@ -20,12 +20,12 @@ def disbursement_efficiency(df):
 
         avg_time = df['PROCESSING_DAYS'].mean()
 
-        print(f"\n Average Processing Time: {avg_time:.2f} days")
+        print(f"\n📊 Average Processing Time: {avg_time:.2f} days")
 
         results['avg_time'] = avg_time
 
     else:
-        print(" Missing date columns")
+        print("⚠️ Missing date columns")
 
     # -----------------------------------
     # 2. REGION COMPARISON (ALTERNATIVE)
@@ -34,28 +34,35 @@ def disbursement_efficiency(df):
 
         region_time = df.groupby('REGION')['PROCESSING_DAYS'].mean()
 
-        print("\n Processing Time by Region:\n", region_time)
+        print("\n📊 Processing Time by Region:\n", region_time)
 
         results['region_time'] = region_time
 
     # -----------------------------------
     # 3. LOAN PURPOSE ANALYSIS
     # -----------------------------------
-    if 'LOAN_PURPOSE' in df.columns:
+    purpose_col = None
 
-        purpose_time = df.groupby('LOAN_PURPOSE')['PROCESSING_DAYS'].mean()
+    for col in df.columns:
+        if 'PURPOSE' in col.upper():
+            purpose_col = col
+            break
 
-        print("\n Processing Time by Loan Purpose:\n", purpose_time)
+    if purpose_col:
+
+        purpose_time = df.groupby(purpose_col)['PROCESSING_DAYS'].mean()
+
+        print(f"\n📊 Processing Time by {purpose_col}:\n", purpose_time)
 
         results['purpose'] = purpose_time
 
     else:
-        print(" LOAN_PURPOSE not available")
+        print("⚠️ Loan purpose column not available")
 
     # -----------------------------------
-    #  BRANCH LIMITATION
+    # 🚨 BRANCH LIMITATION
     # -----------------------------------
-    print("\n Branch comparison NOT possible")
+    print("\n⚠️ Branch comparison NOT possible")
     print("Reason: No BRANCH_ID linkage in dataset")
 
     return results

@@ -53,7 +53,7 @@ from src.pgds.assignment.visualizer.plots import plot_profitability
 from src.pgds.assignment.analyser.geospatial_analysis import geospatial_analysis
 from src.pgds.assignment.visualizer.plots import plot_geospatial
 
-from src.pgds.assignment.analyser.default_trends import default_trends_analysis
+from src.pgds.assignment.analyser.default_trend_analysis import default_trends_analysis
 from src.pgds.assignment.visualizer.plots import plot_default_trends
 
 from src.pgds.assignment.analyser.branch_efficiency import branch_efficiency_analysis

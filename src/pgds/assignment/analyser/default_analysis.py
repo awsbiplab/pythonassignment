@@ -1,49 +1,56 @@
-#def default_risk_analysis(df): return df.groupby('DEFAULT_FLAG').mean(numeric_only=True)
-
 import pandas as pd
 
-def default_risk_analysis(df, branches=None):
-    print("\n⚠️ DEFAULT RISK ANALYSIS")
+def default_risk_analysis(df, branches):
+
+    print("\n📉 DEFAULT RISK ANALYSIS")
 
     results = {}
 
     # -----------------------------------
-    # 1. CORRELATION: LOAN ATTRIBUTES
+    # 1. CORRELATION (LOAN ATTRIBUTES)
     # -----------------------------------
     cols = ['LOAN_AMOUNT', 'INTEREST_RATE', 'CREDIT_SCORE', 'DEFAULT_FLAG']
 
-    available_cols = [c for c in cols if c in df.columns]
+    analysis_df = df[cols].dropna()
 
-    if len(available_cols) >= 2:
-        corr = df[available_cols].corr()
-        results['loan_correlation'] = corr
-        print("\nLoan Attribute Correlation:\n", corr)
+    corr_main = analysis_df.corr()
+    results['loan_correlation'] = corr_main
+
+    print("\n📊 Loan Attribute Correlation:\n", corr_main)
 
     # -----------------------------------
     # 2. PAIRWISE CORRELATION
     # -----------------------------------
     pair_cols = ['EMI_AMOUNT', 'OVERDUE_AMOUNT', 'DEFAULT_AMOUNT']
 
-    pair_cols = [c for c in pair_cols if c in df.columns]
+    pair_df = df[pair_cols].dropna()
 
-    if len(pair_cols) >= 2:
-        pair_corr = df[pair_cols].corr()
-        results['pairwise_correlation'] = pair_corr
-        print("\nPairwise Correlation:\n", pair_corr)
+    corr_pair = pair_df.corr()
+    results['pairwise_correlation'] = corr_pair
+
+    print("\n📊 Pairwise Correlation:\n", corr_pair)
 
     # -----------------------------------
-    # 3. BRANCH-LEVEL DEFAULT ANALYSIS
+    # 3. BRANCH vs DEFAULT
     # -----------------------------------
-    if branches is not None and 'BRANCH_ID' in df.columns:
-        merged = df.merge(branches, on='BRANCH_ID', how='left')
+    if 'REGION' in df.columns:
 
-        branch_corr = merged.groupby('REGION').agg({
-            'DEFAULT_FLAG': 'mean',
-            'DELINQUENT_LOANS': 'mean',
-            'LOAN_DISBURSEMENT_AMOUNT': 'mean'
-        })
+        # Default rate by region
+        region_default = df.groupby('REGION')['DEFAULT_FLAG'].mean()
 
-        results['branch_analysis'] = branch_corr
-        print("\nBranch-Level Risk:\n", branch_corr)
+        # Merge with branch metrics
+        branch_analysis = branches.merge(
+            region_default,
+            on='REGION',
+            how='left'
+        )
+
+        branch_corr = branch_analysis[
+            ['DELINQUENT_LOANS', 'LOAN_DISBURSEMENT_AMOUNT', 'DEFAULT_FLAG']
+        ].corr()
+
+        results['branch_correlation'] = branch_corr
+
+        print("\n📊 Branch vs Default Correlation:\n", branch_corr)
 
     return results
