@@ -1,49 +1,56 @@
-import pandas as pd
+def geospatial_analysis(df):
 
-def geospatial_analysis(df, branches):
-    print("\n🌍 GEOSPATIAL ANALYSIS")
+    print("\n GEOSPATIAL ANALYSIS")
 
     results = {}
 
     # -----------------------------------
-    # MERGE WITH BRANCH DATA
+    # 1. ACTIVE LOANS BY REGION (SAFE)
     # -----------------------------------
-    merged = df.merge(branches, on='BRANCH_ID', how='left')
+    if 'LOAN_STATUS' in df.columns:
 
-    # -----------------------------------
-    # 1. LOAN DISTRIBUTION (REGION)
-    # -----------------------------------
-    if 'REGION' in merged.columns:
-        loan_dist = merged['REGION'].value_counts()
+        status = df['LOAN_STATUS'].astype(str).str.upper().str.strip()
 
-        results['loan_distribution'] = loan_dist
+        active_loans = df[
+            status.isin(['ACTIVE', 'APPROVED', 'DISBURSED'])
+        ]
 
-        print("\nLoan Distribution by Region:\n", loan_dist)
+        # fallback if empty
+        if active_loans.empty:
+            print("No ACTIVE loans → using non-default loans")
+            active_loans = df[df['DEFAULT_FLAG'] == 0]
+
+    else:
+        print("LOAN_STATUS missing → using DEFAULT_FLAG")
+        active_loans = df[df['DEFAULT_FLAG'] == 0]
+
+    # REGION DISTRIBUTION
+    if 'REGION' in active_loans.columns:
+
+        region_dist = active_loans['REGION'].value_counts()
+
+        print("\n Active Loans by Region:\n", region_dist)
+
+        results['region_distribution'] = region_dist
+
+    else:
+        print("REGION missing")
 
     # -----------------------------------
     # 2. DEFAULT RATE BY REGION
     # -----------------------------------
-    if 'REGION' in merged.columns:
-        default_rate = merged.groupby('REGION')['DEFAULT_FLAG'].mean()
+    if 'REGION' in df.columns and 'DEFAULT_FLAG' in df.columns:
+
+        default_rate = df.groupby('REGION')['DEFAULT_FLAG'].mean()
+
+        print("\n Default Rate by Region:\n", default_rate)
 
         results['default_rate'] = default_rate
 
-        print("\nDefault Rate by Region:\n", default_rate)
-
     # -----------------------------------
-    # 3. RURAL vs URBAN ANALYSIS
+    # 3. RURAL vs URBAN (NOT AVAILABLE)
     # -----------------------------------
-    if 'AREA_TYPE' in merged.columns:
-        area_analysis = merged.groupby('AREA_TYPE').agg({
-            'LOAN_AMOUNT': 'sum',
-            'DEFAULT_FLAG': 'mean'
-        }).rename(columns={
-            'LOAN_AMOUNT': 'TOTAL_DISBURSEMENT',
-            'DEFAULT_FLAG': 'DEFAULT_RATE'
-        })
-
-        results['area_analysis'] = area_analysis
-
-        print("\nRural vs Urban Analysis:\n", area_analysis)
+    print("\n Rural vs Urban analysis NOT possible")
+    print("Reason: AREA_TYPE column not available in dataset")
 
     return results

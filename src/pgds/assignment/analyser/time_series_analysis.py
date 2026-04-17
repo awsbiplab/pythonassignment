@@ -1,61 +1,80 @@
 import pandas as pd
 
-def time_series_analysis(df, loans, applications, defaults, branches):
-    print("\n📅 TIME SERIES ANALYSIS")
+def time_series_analysis(df):
+
+    print("\n TIME SERIES ANALYSIS")
 
     results = {}
 
     # -----------------------------------
-    # 1. LOAN DISBURSEMENT TREND
+    # 1. MONTHLY DISBURSEMENT TREND
     # -----------------------------------
-    if 'DISBURSEMENT_DATE' in loans.columns:
-        loans['DISBURSEMENT_DATE'] = pd.to_datetime(
-            loans['DISBURSEMENT_DATE'], errors='coerce'
-        )
+    if 'DISBURSAL_DATE' in df.columns:
 
-        disbursement_trend = loans.groupby(
-            loans['DISBURSEMENT_DATE'].dt.to_period('M')
+        df['DISBURSAL_DATE'] = pd.to_datetime(df['DISBURSAL_DATE'], errors='coerce')
+
+        disb_trend = df.groupby(
+            df['DISBURSAL_DATE'].dt.to_period('M')
         ).size()
 
-        results['disbursement_trend'] = disbursement_trend
+        print("\n Monthly Disbursement Trend:\n", disb_trend.head())
 
-        print("\nMonthly Disbursement Trend:\n", disbursement_trend.head())
+        results['disbursement'] = disb_trend
+
+    else:
+        print(" DISBURSAL_DATE missing")
 
     # -----------------------------------
     # 2. SEASONAL PATTERN (APPLICATIONS)
     # -----------------------------------
-    if 'APPLICATION_DATE' in applications.columns:
-        applications['APPLICATION_DATE'] = pd.to_datetime(
-            applications['APPLICATION_DATE'], errors='coerce'
-        )
+    if 'APPLICATION_DATE' in df.columns:
 
-        seasonal = applications.groupby(
-            applications['APPLICATION_DATE'].dt.month
+        df['APPLICATION_DATE'] = pd.to_datetime(df['APPLICATION_DATE'], errors='coerce')
+
+        seasonal_app = df.groupby(
+            df['APPLICATION_DATE'].dt.month
         ).size()
 
-        results['seasonal_pattern'] = seasonal
+        print("\n Seasonal Pattern (Applications):\n", seasonal_app)
 
-        print("\nSeasonal Pattern (Month-wise):\n", seasonal)
+        results['seasonal_app'] = seasonal_app
 
     # -----------------------------------
-    # 3. MONTHLY DEFAULT RATE (REGION)
+    # SEASONAL PATTERN (DISBURSEMENT)
     # -----------------------------------
-    if 'DEFAULT_DATE' in defaults.columns:
-        defaults['DEFAULT_DATE'] = pd.to_datetime(
-            defaults['DEFAULT_DATE'], errors='coerce'
-        )
+    if 'DISBURSAL_DATE' in df.columns:
 
-        merged = df.merge(branches, on='BRANCH_ID', how='left') \
-                   .merge(defaults, on='LOAN_ID', how='left')
+        seasonal_disb = df.groupby(
+            df['DISBURSAL_DATE'].dt.month
+        ).size()
 
-        merged['MONTH'] = merged['DEFAULT_DATE'].dt.to_period('M')
+        print("\n Seasonal Pattern (Disbursement):\n", seasonal_disb)
 
-        region_default = merged.groupby(
-            ['REGION', 'MONTH']
-        )['DEFAULT_FLAG'].mean()
+        results['seasonal_disb'] = seasonal_disb
 
-        results['region_default'] = region_default
+        # -----------------------------------
+        # 3. MONTHLY DEFAULT RATE BY REGION
+        # -----------------------------------
+        if 'DISBURSAL_DATE' in df.columns and 'REGION' in df.columns and 'DEFAULT_FLAG' in df.columns:
 
-        print("\nMonthly Default Rate by Region:\n", region_default.head())
+            df['DISBURSAL_DATE'] = pd.to_datetime(df['DISBURSAL_DATE'], errors='coerce')
+
+            df_valid = df[df['DISBURSAL_DATE'].notna()].copy()
+
+            if df_valid.empty:
+                print(" No valid DISBURSAL_DATE data")
+            else:
+                df_valid['MONTH'] = df_valid['DISBURSAL_DATE'].dt.to_period('M')
+
+                region_default = df_valid.groupby(
+                    ['REGION', 'MONTH']
+                )['DEFAULT_FLAG'].mean()
+
+                print("\nMonthly Default Rate by Region:\n", region_default.head())
+
+                results['region_default'] = region_default
+
+        else:
+            print("Required columns missing for default rate")
 
     return results

@@ -1,67 +1,68 @@
-import pandas as pd
+def branch_performance_analysis(branches):
 
-def branch_performance(df, applications=None, defaults=None):
-    print("\n🏢 BRANCH PERFORMANCE ANALYSIS")
+    print("\n BRANCH PERFORMANCE ANALYSIS (USING BRANCH DATA ONLY)")
 
     results = {}
 
     # -----------------------------------
-    # 1. LOAN DISBURSEMENT + DEFAULT RATE
+    # AVAILABLE METRICS
     # -----------------------------------
-    if 'BRANCH_ID' in df.columns:
-        branch_summary = df.groupby('BRANCH_ID').agg({
-            'LOAN_AMOUNT': 'sum',
-            'DEFAULT_FLAG': 'mean'
-        }).rename(columns={
-            'LOAN_AMOUNT': 'TOTAL_DISBURSEMENT',
-            'DEFAULT_FLAG': 'DEFAULT_RATE'
-        })
-
-        results['branch_summary'] = branch_summary
-        print("\nBranch Summary:\n", branch_summary.head())
+    print("\n Available Metrics:")
+    print("- LOAN_DISBURSEMENT_AMOUNT")
+    print("- DELINQUENT_LOANS")
+    print("- REGION")
 
     # -----------------------------------
-    # 2. PROCESSING TIME
+    # 1. LOAN DISBURSEMENT RANKING
     # -----------------------------------
-    if applications is not None:
-        applications['APPLICATION_DATE'] = pd.to_datetime(applications['APPLICATION_DATE'], errors='coerce')
-        applications['APPROVAL_DATE'] = pd.to_datetime(applications.get('APPROVAL_DATE'), errors='coerce')
+    loan_rank = branches.sort_values(
+        'LOAN_DISBURSEMENT_AMOUNT',
+        ascending=False
+    )
 
-        if 'BRANCH_ID' in applications.columns:
-            applications['PROCESSING_DAYS'] = (
-                applications['APPROVAL_DATE'] - applications['APPLICATION_DATE']
-            ).dt.days
+    results['loan_ranking'] = loan_rank
 
-            processing = applications.groupby('BRANCH_ID')['PROCESSING_DAYS'].mean()
-            results['processing_time'] = processing
-
-            print("\nProcessing Time:\n", processing.head())
+    print("\n Top Branches by Loan Disbursement:\n", loan_rank.head())
 
     # -----------------------------------
-    # 3. RECOVERY RATE
+    # 2. DELINQUENCY (RISK PROXY)
     # -----------------------------------
-    if defaults is not None:
-        defaults['RECOVERY_RATE'] = defaults['RECOVERY_AMOUNT'] / defaults['DEFAULT_AMOUNT']
+    delinquency_rank = branches.sort_values(
+        'DELINQUENT_LOANS',
+        ascending=False
+    )
 
-        recovery = defaults.groupby('LOAN_ID')['RECOVERY_RATE'].mean()
-        results['recovery_rate'] = recovery
+    results['delinquency_ranking'] = delinquency_rank
 
-        print("\nRecovery Rate:\n", recovery.head())
+    print("\n High Delinquency Branches:\n", delinquency_rank.head())
 
     # -----------------------------------
-    # 4. REGION COMPARISON
+    # 3. REGION COMPARISON
     # -----------------------------------
-    if 'REGION' in df.columns:
-        region_perf = df.groupby('REGION').agg({
-            'LOAN_AMOUNT': 'sum',
-            'DEFAULT_FLAG': 'mean'
-        }).rename(columns={
-            'LOAN_AMOUNT': 'TOTAL_DISBURSEMENT',
-            'DEFAULT_FLAG': 'DEFAULT_RATE'
-        })
+    region_perf = branches.groupby('REGION').agg({
+        'LOAN_DISBURSEMENT_AMOUNT': 'sum',
+        'DELINQUENT_LOANS': 'sum'
+    })
 
-        results['region_performance'] = region_perf
+    results['region_performance'] = region_perf
 
-        print("\nRegion Performance:\n", region_perf)
+    print("\n Region-wise Branch Performance:\n", region_perf)
+
+    # -----------------------------------
+    # LIMITATIONS (IMPORTANT)
+    # -----------------------------------
+    print("\n LIMITATIONS:")
+
+    print("\n Processing Time Efficiency cannot be calculated")
+    print("Reason: APPLICATION_DATE and DISBURSAL_DATE are not available in branch dataset")
+
+    print("\n Default Rate cannot be calculated")
+    print("Reason: DEFAULT_FLAG or default-level data is not available in branch dataset")
+
+    print("\n Recovery Rate cannot be calculated")
+    print("Reason: RECOVERY_AMOUNT is not available in branch dataset")
+
+    print("\n Direct branch-to-loan mapping not available")
+    print("Reason: No common key (e.g., BRANCH_ID) linking branch and loan datasets")
 
     return results

@@ -1,64 +1,71 @@
 import pandas as pd
 
 def customer_segmentation(df):
-    print("\n👥 CUSTOMER SEGMENTATION")
+
+    print("\n CUSTOMER SEGMENTATION")
+
+    results = {}
 
     # -----------------------------------
-    # 1. CREDIT SCORE SEGMENT
+    # 1. CREATE SEGMENTS
     # -----------------------------------
-    df['CREDIT_SEGMENT'] = pd.cut(
-        df['CREDIT_SCORE'],
-        bins=[0, 500, 650, 750, 900],
-        labels=['High Risk', 'Medium', 'Good', 'Excellent']
-    )
+
+    # Income Segmentation
+    if 'ANNUAL_INCOME' in df.columns:
+        df['INCOME_SEGMENT'] = pd.qcut(
+            df['ANNUAL_INCOME'],
+            3,
+            labels=['Low', 'Medium', 'High']
+        )
+
+    # Credit Score Segmentation
+    if 'CREDIT_SCORE' in df.columns:
+        df['CREDIT_SEGMENT'] = pd.cut(
+            df['CREDIT_SCORE'],
+            bins=[300, 600, 750, 900],
+            labels=['Low', 'Medium', 'High']
+        )
+
+    # Loan Status
+    if 'DEFAULT_FLAG' in df.columns:
+        df['LOAN_STATUS'] = df['DEFAULT_FLAG'].map({
+            0: 'Non-Default',
+            1: 'Default'
+        })
 
     # -----------------------------------
-    # 2. INCOME SEGMENT
-    # -----------------------------------
-    df['INCOME_SEGMENT'] = pd.qcut(
-        df['ANNUAL_INCOME'],
-        q=3,
-        labels=['Low Income', 'Mid Income', 'High Income']
-    )
-
-    # -----------------------------------
-    # 3. LOAN STATUS SEGMENT
-    # -----------------------------------
-    df['LOAN_STATUS'] = df['DEFAULT_FLAG'].map({
-        0: 'Active',
-        1: 'Default'
-    })
-
-    # -----------------------------------
-    # 4. HIGH-RISK CUSTOMERS
+    # 2. HIGH-RISK CUSTOMERS
     # -----------------------------------
     high_risk = df[
-        (df['CREDIT_SEGMENT'] == 'High Risk') |
+        (df['CREDIT_SEGMENT'] == 'Low') &
         (df['DEFAULT_FLAG'] == 1)
     ]
 
+    print("\n High Risk Customers:", len(high_risk))
+
+    results['high_risk'] = high_risk
+
     # -----------------------------------
-    # 5. HIGH-VALUE CUSTOMERS
+    # 3. HIGH-VALUE CUSTOMERS
     # -----------------------------------
     high_value = df[
-        (df['CREDIT_SEGMENT'].isin(['Good', 'Excellent'])) &
-        (df['INCOME_SEGMENT'] == 'High Income') &
+        (df['INCOME_SEGMENT'] == 'High') &
         (df['DEFAULT_FLAG'] == 0)
     ]
 
+    print("\n High Value Customers:", len(high_value))
+
+    results['high_value'] = high_value
+
     # -----------------------------------
-    # 6. REPAYMENT BEHAVIOR
+    # 4. REPAYMENT BEHAVIOR
     # -----------------------------------
-    behavior = df.groupby('CREDIT_SEGMENT')['DEFAULT_FLAG'].mean()
+    if 'OVERDUE_AMOUNT' in df.columns:
 
-    print("\nHigh Risk Customers:", len(high_risk))
-    print("High Value Customers:", len(high_value))
+        repayment = df.groupby('INCOME_SEGMENT')['OVERDUE_AMOUNT'].mean()
 
-    print("\nRepayment Behavior:\n", behavior)
+        print("\n Repayment Behavior by Income:\n", repayment)
 
-    return {
-        "df": df,
-        "high_risk": high_risk,
-        "high_value": high_value,
-        "behavior": behavior
-    }
+        results['repayment'] = repayment
+
+    return results
