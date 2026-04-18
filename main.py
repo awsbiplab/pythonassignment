@@ -17,6 +17,7 @@ from src.pgds.assignment.analyser.customer_analysis import customer_segmentation
 from src.pgds.assignment.analyser.statistical_analysis import advanced_statistical_analysis
 from src.pgds.assignment.analyser.transaction_analysis import transaction_recovery_analysis
 from src.pgds.assignment.analyser.loan_application_analysis import loan_application_analysis
+from src.pgds.assignment.analyser.recovery_analysis import recovery_effectiveness
 
 from src.pgds.assignment.analyser.emi_analysis import emi_analysis
 from src.pgds.assignment.analyser.disbursement_analysis import disbursement_efficiency
@@ -49,7 +50,8 @@ from src.pgds.assignment.visualizer.plots import (
     plot_risk,
     plot_time_to_default,
     plot_transaction_pattern,
-     plot_default_risk
+     plot_default_risk,
+     plot_recovery
 
 )
 
@@ -134,7 +136,8 @@ def main():
     # # Task 10 :    Recovery Effectiveness
     # # -----------------------------------
     print("Task 10 :    Recovery Effectiveness")
-    print("TODO")
+    recovery_effectiveness(df)
+    plot_recovery(df)
 
     # # -----------------------------------
     # # Task 11 :     Loan Disbursement Efficiency

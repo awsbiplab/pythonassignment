@@ -463,6 +463,56 @@ def plot_application_analysis(applications):
 
     print("\n Some plots may be skipped if columns not present")
 
+#Task 10
+
+import matplotlib.pyplot as plt
+import os
+
+def plot_recovery(df):
+
+    print("\nPLOTTING RECOVERY EFFECTIVENESS")
+
+    os.makedirs("reports/figures", exist_ok=True)
+
+    # -----------------------------------
+    # CLEAN DATA
+    # -----------------------------------
+    df['DEFAULT_AMOUNT'] = df['DEFAULT_AMOUNT'].fillna(0)
+    df['RECOVERY_AMOUNT'] = df['RECOVERY_AMOUNT'].fillna(0)
+
+    df_valid = df[df['DEFAULT_AMOUNT'] > 0].copy()
+
+    if df_valid.empty:
+        print(" No recovery data")
+        return
+
+    df_valid['RECOVERY_RATE'] = (
+        df_valid['RECOVERY_AMOUNT'] / df_valid['DEFAULT_AMOUNT']
+    )
+
+    # -----------------------------------
+    # LEGAL ACTION PLOT
+    # -----------------------------------
+    if 'LEGAL_ACTION' in df_valid.columns:
+
+        legal = df_valid.groupby('LEGAL_ACTION')['RECOVERY_RATE'].mean()
+
+        if not legal.empty:
+            legal.plot(kind='bar')
+            plt.title("Recovery Rate by Legal Action")
+
+            plt.savefig("reports/figures/task_10_recovery_legal.png")
+            plt.clf()
+
+    # -----------------------------------
+    # OVERALL DISTRIBUTION
+    # -----------------------------------
+    df_valid['RECOVERY_RATE'].plot(kind='hist')
+    plt.title("Recovery Rate Distribution")
+
+    plt.savefig("reports/figures/task_10_recovery_rate.png")
+    plt.clf()
+
 #     TASK 11
 def plot_disbursement_efficiency(df):
 
