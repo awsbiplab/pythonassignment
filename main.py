@@ -241,7 +241,6 @@ def main():
 
     print("\n ALL TASKS COMPLETED SUCCESSFULLY\n")
     print(" Check reports/figures/ for charts")
-    print(" Check reports/hero_fincorp_analysis.docx for report")
     print("\n All merge column names shown below")
     print(df.columns)
 
